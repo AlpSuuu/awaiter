@@ -1,0 +1,37 @@
+{
+  "name": "converter-to-sync",
+  "version": "1.0.0",
+  "description": "basit bir senkronizer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/AlpSuuu/awaiter/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlpSuuu/awaiter.git"
+  },
+  "author": "https://github.com/AlpSuuu/",
+  "keywords": [
+    "awaiter",
+    "__awaiter",
+    "convert sync",
+    "async to sync",
+    "await in non async",
+    "synchronizer",
+    "convert async to sync",
+    "no await",
+    "no async function",
+    "promise resolver",
+    "await",
+    "resolver",
+    "promise responder",
+    "promise respons",
+    "get pormise response",
+    "resolve pormise",
+    "then"
+  ],
+  "license": "MIT"
+}
