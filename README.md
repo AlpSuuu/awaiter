@@ -2,7 +2,6 @@
 kullanışlı bir "Promise resolver" ve asenkron fonksiyonu senkron fonksiyona dönüştürücü!
 
 ```
-npm install instagram-url-downloader
 git clone https://github.com/AlpSuuu/instagramDownloader.git
 ```
 
