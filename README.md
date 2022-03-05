@@ -2,7 +2,7 @@
 kullanışlı bir "Promise resolver" ve asenkron fonksiyonu senkron fonksiyona dönüştürücü!
 
 ```
-git clone https://github.com/AlpSuuu/instagramDownloader.git
+git clone https://github.com/AlpSuuu/awaiter.git
 ```
 
 ## Tanımlamlar
