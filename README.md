@@ -2,6 +2,7 @@
 kullanışlı bir "Promise resolver" ve asenkron fonksiyonu senkron fonksiyona dönüştürücü!
 
 ```
+npm install converter-to-sync
 git clone https://github.com/AlpSuuu/awaiter.git
 ```
 
@@ -20,7 +21,7 @@ const {
     convertAllToSyncFunction,
     convertToSyncFunction,
     generatorSync,
-} = require("./index");
+} = require("converter-to-sync");
 ```
 
 # Fonksiyonlarımızın Kullanılış Örnekleri;
