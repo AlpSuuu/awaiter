@@ -1,11 +1,12 @@
 {
   "name": "converter-to-sync",
-  "version": "1.0.0",
-  "description": "basit bir senkronizer",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "version": "1.1.4",
+  "description": "basit bir fonksiyon senkronizeri",
+  "files": [
+    "dist",
+    "executer"
+  ],
+  "homepage": "https://github.com/AlpSuuu/awaiter/#readme",
   "bugs": {
     "url": "https://github.com/AlpSuuu/awaiter/issues"
   },
@@ -33,5 +34,29 @@
     "resolve pormise",
     "then"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "lint": "eslint src/**/*.ts test/**/*.ts",
+    "jest": "jest",
+    "test": "ts-node test.ts",
+    "build": "tsc",
+    "prepublishOnly": "del-cli --force dist && tsc",
+    "postpublish": "del-cli --force dist",
+    "postversion": "git push"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.13.0",
+    "@typescript-eslint/parser": "^5.13.0",
+    "del-cli": "^4.0.1",
+    "eslint": "^8.10.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-security": "^1.4.0",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.3",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.2"
+  }
 }

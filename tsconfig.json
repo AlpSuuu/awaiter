@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "Es3",
+    "module": "commonjs",
+    "outDir": "dist",
+    "declaration": true,
+    "allowJs": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "strictPropertyInitialization": false
+  },
+  "include": [
+    "src"
+  ]
+}

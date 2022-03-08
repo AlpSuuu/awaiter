@@ -1,4 +1,4 @@
-## [AlpSuuu/awaiter 😋](https://github.com/AlpSuuu/awaiter/)
+## [AlpSuuu/converter-to-sync 😋](https://github.com/AlpSuuu/awaiter/)
 kullanışlı bir "Promise resolver" ve asenkron fonksiyonu senkron fonksiyona dönüştürücü!
 
 ```
@@ -192,3 +192,10 @@ let promise = Promise.resolve("instagram - @alp.kahyaa")
 
 console.log(promise.getResponse()) // output: 'instagram - @alp.kahyaa'
 ```
+
+<h3>🌟 Bağlantılar!</h3>
+<p align="center">
+<a href="https://www.instagram.com/alp.kahyaa/" target"blank_"><img src="https://img.shields.io/badge/INSTAGRAM%20-DC3175.svg?&style=for-the-badge&logo=instagram&logoColor=white"></a>
+<a href="https://discord.com/users/721391768255594577" target"blank_"><img src="https://img.shields.io/badge/Discord-ffbb00?style=for-the-badge&logo=discord&logoColor=white"></a>
+<a href="https://alpsu-u-teala.glitch.me" target"blank_"><img src="https://img.shields.io/badge/Website-ff0004?style=for-the-badge&logo=google&logoColor=white"></a>
+</p>
