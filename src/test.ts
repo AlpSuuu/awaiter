@@ -8,7 +8,11 @@ import { sleep } from "./index";
 import { convertAllToSyncFunction } from "./index";
 import { convertToSyncFunction } from "./index";
 import { generatorSync } from "./index";
+import { Emitter } from "./index";
 
+Emitter.call(async function(data:any) {
+    console.log(data)
+})
 function asyncFunction1<T>(param1:String) : Promise<T> {
     return new Promise(async (res) => { 
         setTimeout(res , 15 , await param1)

@@ -1,3 +1,4 @@
+import Emitter from "./emitter";
 /**
  * fonksiyon argümanlarımızda belirttiğimiz birinci argüman ve ikinci argüman birbirine eşit olana kadar göndüye alır
  * ve kod satırının bir alt koduna geçip çalıştırmaz javascript'in çalışma prensibinin aksine bir hareket çünkü javscript
@@ -33,7 +34,7 @@ declare function waitLoop(Fvalue: Function, goal: any): any;
  *      console.log(resolved) // outpuy: "AlpSu";
  * }
  */
-declare function promiseResolver(promise: any): any;
+declare function promiseResolver<T>(promise: Promise<T>): any;
 /**
  * kod bloğunun içinde bir alttaki işleme geçmeden belirttiğiniz milisaniye kadar beklemeye yarayan fonksiyon
  * await kullanmaktan bıktıysan sana göre <3
@@ -47,7 +48,7 @@ declare function promiseResolver(promise: any): any;
  *      console.log("AlpSu!")
  * }
  */
-declare function sleep(ms: Number): true | "this is number";
+declare function sleep(ms: Number): (Boolean | String);
 /**
  * girmiş olduğunuz asenkron fonksiyonun belirttiğiniz parametreleriyle birlikte çalıştırıp göndürdüğü promise'in resolve değerini dönrürür
  *
@@ -100,7 +101,7 @@ declare function evalSync(string: string): any;
  *      console.log(data) // output: Object<void>
  * }
  */
-declare function fetch(url: any): any;
+declare function fetch(url: String): object;
 /**
  * senkron bir fonksiyonda await kullanmadan promise verilerini çekmemizi sağlayan fonksiyon
  *
@@ -115,7 +116,7 @@ declare function fetch(url: any): any;
  *      console.log(awaited) // output: "AlpSu";
  * }
  */
-declare function awaiter(callback: any): any;
+declare function awaiter(callback: (Function | any)): Function;
 /**
  * bu fonksiyonumuz asenkron bir fonksiyonun senkron halini yeni bir fonksiyon oluşturarak dönrürür
  * ve asenkron fonksiyonunuzun senkron halini normal bir şekilde paaametrelerini girerek kullanabilirsiniz <3
@@ -132,7 +133,7 @@ declare function awaiter(callback: any): any;
  *      console.log(convertedFunc.call(this , 32 , 8)) // output: "AlpSu";
  * }
  */
-declare function convertToSyncFunction(func: any): "this is not function" | "this is not AsyncFunction" | (() => any);
+declare function convertToSyncFunction(func: Function): (String | Function);
 /**
  * bir dizinin içindeki promise'leri teker teker resolve değerlerini alır ve bir array olarak döndürür
  *
@@ -149,7 +150,7 @@ declare function convertToSyncFunction(func: any): "this is not function" | "thi
  *      console.log(promise_2) // output: "<33"
  * }
  */
-declare function syncAll(promises: Array<any>): any[] | "this is not an array";
+declare function syncAll(promises: Array<any>): (Array<any> | String);
 /**
  * bir dizinin içindeki asenkron fonksiyonları teker teker senkron fonksiyonuna çevirir ve bir array olarak döndürür
  *
@@ -172,7 +173,7 @@ declare function syncAll(promises: Array<any>): any[] | "this is not an array";
  *      console.log(syncFunction_2(15 , 29)) // output: 44
  * }
  */
-declare function convertAllToSyncFunction(functions: Array<Function>): Function[] | "this is not an array";
+declare function convertAllToSyncFunction(functions: Array<Function>): (Array<Function> | String);
 /**
  * promise fonksiyonları teker teker bir jeneratör içinde yield ediniz
  * fonksiyon yield edilen promise fonksiyonların resolve değerlerini bir array olarak döndürür
@@ -199,7 +200,7 @@ declare function convertAllToSyncFunction(functions: Array<Function>): Function[
  *      console.log(promises) // output: Array([ 'AlpSuu' , 44 ]);
  * }
  */
-declare function generatorSync(gen: GeneratorFunction): any;
+declare function generatorSync(gen: Function): (Array<any> | String);
 export { waitLoop };
 export { promiseResolver };
 export { sleep };
@@ -211,3 +212,4 @@ export { awaiter };
 export { generatorSync };
 export { convertToSyncFunction };
 export { convertAllToSyncFunction };
+export { Emitter };

@@ -48,8 +48,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.convertAllToSyncFunction = exports.convertToSyncFunction = exports.generatorSync = exports.awaiter = exports.syncAll = exports.fetch = exports.evalSync = exports.convertSync = exports.sleep = exports.promiseResolver = exports.waitLoop = void 0;
+exports.Emitter = exports.convertAllToSyncFunction = exports.convertToSyncFunction = exports.generatorSync = exports.awaiter = exports.syncAll = exports.fetch = exports.evalSync = exports.convertSync = exports.sleep = exports.promiseResolver = exports.waitLoop = void 0;
 var executer_1 = __importDefault(require("./executer"));
+var emitter_1 = __importDefault(require("./emitter"));
+exports.Emitter = emitter_1["default"];
 /**
  * @private
  * bir objeye ya da bir constructor'ın prototipi arasına bir property ekler.
@@ -223,9 +225,10 @@ function tag(value) {
  */
 function promiseResolver(promise) {
     var still = true, resolvedData;
+    var now = Date.now();
     if (tag.call(void 0, promise) !== "Promise")
         return "this is not promise";
-    promise.next(function (_a) {
+    promise['next'](function (_a) {
         var response = _a.response;
         resolvedData = response, still = false;
     });
@@ -242,6 +245,13 @@ function promiseResolver(promise) {
                 void executer_1["default"]['activate']();
         }();
     }
+    var passingByMs = Number(Date.now()) - Number(now);
+    emitter_1["default"].emit({
+        status: "Promise resolved in ".concat(Number(passingByMs / 1000).toFixed(3), " seconds"),
+        target: { promise: promise, data: resolvedData },
+        date: new Date(Date.now()).toLocaleDateString() + " - " + new Date(Date.now()).toLocaleTimeString(),
+        hitch: passingByMs + " ms"
+    });
     return resolvedData;
 }
 exports.promiseResolver = promiseResolver;
@@ -278,6 +288,12 @@ function sleep(ms) {
                 void executer_1["default"]['activate']();
         }();
     }
+    emitter_1["default"].emit({
+        status: "the project slept for ".concat(Number(ms / 1000).toFixed(3), " seconds"),
+        target: null,
+        date: new Date(Date.now()).toLocaleDateString() + " - " + new Date(Date.now()).toLocaleTimeString(),
+        hitch: ms + " ms"
+    });
     return true;
 }
 exports.sleep = sleep;
@@ -301,6 +317,7 @@ exports.sleep = sleep;
 function convertSync(func, arg) {
     if (typeof func !== "function")
         return "this is not function";
+    var now = Date.now();
     var argsx = arguments;
     if (tag.call(void 0, func) !== "AsyncFunction" && tag.call(void 0, func.apply(void 0, Array.from(arguments).filter(function (x) { return x !== Array.from(argsx)[0]; }))) !== "Promise")
         return "this function is not async";
@@ -328,6 +345,13 @@ function convertSync(func, arg) {
                 void executer_1["default"]['activate']();
         }();
     }
+    var passingByMs = Number(Date.now()) - Number(now);
+    emitter_1["default"].emit({
+        status: "function is synced in ".concat(Number(passingByMs / 1000).toFixed(3), " seconds"),
+        target: { "function": func, data: resolvedData },
+        date: new Date(Date.now()).toLocaleDateString() + " - " + new Date(Date.now()).toLocaleTimeString(),
+        hitch: passingByMs + " ms"
+    });
     return resolvedData;
 }
 exports.convertSync = convertSync;
@@ -356,6 +380,7 @@ function evalSync(string) {
     if (typeof string !== "string")
         string = String(string);
     var functionArguments = [], still = true, resolvedData;
+    var now = Date.now();
     var promise = filterFirstArg.call(void 0, arguments);
     var funcArgs = promise['getResponse']();
     for (var _i = 0, funcArgs_2 = funcArgs; _i < funcArgs_2.length; _i++) {
@@ -381,6 +406,13 @@ function evalSync(string) {
                 void executer_1["default"]['activate']();
         }();
     }
+    var passingByMs = Number(Date.now()) - Number(now);
+    emitter_1["default"].emit({
+        status: "code is synced in ".concat(Number(passingByMs / 1000).toFixed(3), " seconds"),
+        target: { code: string, data: resolvedData },
+        date: new Date(Date.now()).toLocaleDateString() + " - " + new Date(Date.now()).toLocaleTimeString(),
+        hitch: passingByMs + " ms"
+    });
     return resolvedData;
 }
 exports.evalSync = evalSync;
@@ -398,6 +430,7 @@ exports.evalSync = evalSync;
  */
 function fetch(url) {
     var data, still = true;
+    var now = Date.now();
     require("https").get(url, function (res) {
         res.setEncoding("utf8");
         var body = "";
@@ -423,6 +456,13 @@ function fetch(url) {
                 void executer_1["default"]['activate']();
         }();
     }
+    var passingByMs = Number(Date.now()) - Number(now);
+    emitter_1["default"].emit({
+        status: "requested in ".concat(Number(passingByMs / 1000).toFixed(3), " seconds"),
+        target: { url: url, data: data },
+        date: new Date(Date.now()).toLocaleDateString() + " - " + new Date(Date.now()).toLocaleTimeString(),
+        hitch: passingByMs + " ms"
+    });
     return data;
 }
 exports.fetch = fetch;
@@ -446,6 +486,7 @@ function awaiter(callback) {
      */
     return function () {
         var still = true, resolve;
+        var now = Date.now();
         var prevArgs = [];
         var argsx = arguments;
         for (var _i = 0, argsx_1 = argsx; _i < argsx_1.length; _i++) {
@@ -468,21 +509,28 @@ function awaiter(callback) {
         void callback.run.apply(callback, args);
         while (still)
             void execute["run"](still);
+        var passingByMs = Number(Date.now()) - Number(now);
+        emitter_1["default"].emit({
+            status: "waited in ".concat(Number(passingByMs / 1000).toFixed(3), " seconds"),
+            target: { data: resolve },
+            date: new Date(Date.now()).toLocaleDateString() + " - " + new Date(Date.now()).toLocaleTimeString(),
+            hitch: passingByMs + " ms"
+        });
         return resolve;
         /**
          * Döngüyü devam ettirmesi için girdiğimiz değer => true
          *
-         * @param {Boolean} kontrol
+         * @param {Boolean} checkVal
          * @returns {Function}
          */
-        function execute(kontrol) {
+        function execute(checkVal) {
             return function () {
                 executer_1["default"]['activate'] = function () {
                     var executer = Function.call.bind(require("../executer/executer.js")['execute']);
                     executer.call(void 0);
                 };
                 void process['_tickCallback']();
-                if (kontrol)
+                if (checkVal)
                     void executer_1["default"]['activate']();
             }();
         }
@@ -511,6 +559,7 @@ function convertToSyncFunction(func) {
     if (tag.call(void 0, func) !== "AsyncFunction" && tag.call(void 0, func.apply(void 0, arguments)) !== "Promise")
         return "this is not AsyncFunction";
     return function convertedFunc() {
+        var now = Date.now();
         var resolvedData, still = true;
         var args = [];
         var argsx = arguments;
@@ -535,6 +584,13 @@ function convertToSyncFunction(func) {
                     void executer_1["default"]['activate']();
             }();
         }
+        var passingByMs = Number(Date.now()) - Number(now);
+        emitter_1["default"].emit({
+            status: "async function converted to sync function in ".concat(Number(passingByMs / 1000).toFixed(3), " seconds"),
+            target: { "function": func, data: resolvedData },
+            date: new Date(Date.now()).toLocaleDateString() + " - " + new Date(Date.now()).toLocaleTimeString(),
+            hitch: passingByMs + " ms"
+        });
         return resolvedData;
     };
 }
@@ -562,6 +618,7 @@ function syncAll(promises) {
     for (var _i = 0, promises_1 = promises; _i < promises_1.length; _i++) {
         var promise = promises_1[_i];
         var still = true, resolvedData;
+        var now = Date.now();
         if (tag.call(void 0, promise) !== "Promise") {
             push.push(promise);
         }
@@ -572,6 +629,13 @@ function syncAll(promises) {
             });
             for (; still;)
                 execute.call(void 0, still);
+            var passingByMs = Number(Date.now()) - Number(now);
+            emitter_1["default"].emit({
+                status: "Promise is resolved in ".concat(Number(passingByMs / 1000).toFixed(3), " seconds"),
+                target: { promise: promise, data: resolvedData },
+                date: new Date(Date.now()).toLocaleDateString() + " - " + new Date(Date.now()).toLocaleTimeString(),
+                hitch: passingByMs + " ms"
+            });
             push.push(resolvedData);
         }
     }
@@ -633,6 +697,7 @@ function convertAllToSyncFunction(functions) {
     function selectFunc(func) {
         return function convertedFunc() {
             var resolvedData, still = true;
+            var now = Date.now();
             var args = [];
             var argsx = arguments;
             for (var _i = 0, argsx_3 = argsx; _i < argsx_3.length; _i++) {
@@ -656,6 +721,13 @@ function convertAllToSyncFunction(functions) {
                         void executer_1["default"]['activate']();
                 }();
             }
+            var passingByMs = Number(Date.now()) - Number(now);
+            emitter_1["default"].emit({
+                status: "async function converted sync form in ".concat(Number(passingByMs / 1000).toFixed(3), " seconds"),
+                target: { functions: func, data: convertedFunc },
+                date: new Date(Date.now()).toLocaleDateString() + " - " + new Date(Date.now()).toLocaleTimeString(),
+                hitch: passingByMs + " ms"
+            });
             return resolvedData;
         };
     }
@@ -695,6 +767,8 @@ exports.convertAllToSyncFunction = convertAllToSyncFunction;
  */
 function generatorSync(gen) {
     var func = gen();
+    if (tag.call(void 0, func) !== 'GeneratorFunction' && typeof func !== "function" && func.next && func.next['value'] && func["throw"] && func["return"])
+        return "this is not generator function";
     return function () {
         var index = 0;
         var nexted = func.next();
@@ -709,6 +783,7 @@ function generatorSync(gen) {
         for (var _i = 0, yields_1 = yields; _i < yields_1.length; _i++) {
             var promise = yields_1[_i];
             var still = true, resolvedData;
+            var now = Date.now();
             if (tag.call(void 0, promise) !== "Promise") {
                 push.push(promise);
             }
@@ -719,6 +794,13 @@ function generatorSync(gen) {
                 });
                 for (; still;)
                     execute.call(void 0, still);
+                var passingByMs = Number(Date.now()) - Number(now);
+                emitter_1["default"].emit({
+                    status: "Promise is resolved in ".concat(Number(passingByMs / 1000).toFixed(3), " seconds"),
+                    target: { promise: promise, data: resolvedData },
+                    date: new Date(Date.now()).toLocaleDateString() + " - " + new Date(Date.now()).toLocaleTimeString(),
+                    hitch: passingByMs + " ms"
+                });
                 push.push(resolvedData);
             }
         }

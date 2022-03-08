@@ -21,10 +21,20 @@ const {
     convertAllToSyncFunction,
     convertToSyncFunction,
     generatorSync,
+    Emitter
 } = require("converter-to-sync");
 ```
 
 # Fonksiyonlarımızın Kullanılış Örnekleri;
+
+### Başlamadan önce kullandığınız fonksiyonların verilerini kolaylıkla çekmek için aşağıdaki kodu yapıştırın fonksiyonlarımızı her kullandığımızda veriler Kendi Emitter'ımıza yansıyacaktır! Not: Kodu fonksiyonlarımızı kullandığınız kısmın üstüne yapıştırın aksi taktirde Emitter çalışmaz
+```js
+Emitter.call(async function(data) {
+    console.log(data) // { status : "durum mesajı", target : "hedefimiz" , date : "Fonksiyonumuzun kullanılma tarihi", hitch : "Aksama süresi"}
+})
+
+...// fonksiyonlarımızı şimdi kullanabilirsiniz
+```
 
 ## 1-) evalSync
 ### String formundaki bir kodu eval yardımıyla çalıştırmaya yarar fakat kodumuzda bir promise döndürmemiz gerekiyor!
@@ -184,7 +194,6 @@ let resolvedValues = generatorSync(function*() {
 
 console.log(resolvedValues) // Array([ 'i' , 'love - you' , 'AlpSuuğ' ]);
 ```
-
 ## Ekstra kullanım 
 ### Promise fonksiyonumuzun Prototipi arasına eklediğimiz "getResponse" fonksiyonumuz ile birlikte bir Promise'in resolve edilen değerini kolaylıkla çekebilirsiniz!
 ```js

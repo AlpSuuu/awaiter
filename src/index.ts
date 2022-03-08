@@ -1,5 +1,5 @@
 import pauser from "./executer";
-
+import Emitter from "./emitter";
 /**
  * @private
  * bir objeye ya da bir constructor'ın prototipi arasına bir property ekler.
@@ -19,18 +19,18 @@ import pauser from "./executer";
  * }
  * 
  */
-function prototyper(object: object, property: PropertyKey , value:any) {
+function prototyper(object: object, property: PropertyKey , value:any) : Object {
     //if(typeof (object) === "function") object = object.prototype; 
-    const hasOwn = Function.call.bind( Object.prototype.hasOwnProperty );
-    const control_define = hasOwn( Object.prototype, '__defineGetter__' );
+    const hasOwn:Function = Function.call.bind(Object.prototype.hasOwnProperty);
+    const control_define:Boolean = hasOwn(Object.prototype, '__defineGetter__');
     /*------------------------------------------------------------------------------------------------------*/
-    let get = Function.call.bind( Object["prototype"]["__lookupGetter__"] );
-    let set = Function.call.bind( Object["prototype"]["__lookupSetter__"] );
+    let get:Function = Function.call.bind(Object["prototype"]["__lookupGetter__"]);
+    let set:Function = Function.call.bind(Object["prototype"]["__lookupSetter__"]);
 
     let noTarget:symbol = Symbol('acsessTarget');
 
-    const errObj = new Object({
-        [noTarget] : async(obj) => 'this is non object: ' + obj,
+    const errObj:Object = new Object({
+        [noTarget] : async(obj:Object) => 'this is non object: ' + obj,
     }); // hatalarımız, foksiyon veya string tarzında.
 
     const __control__:Function = (func:any) =>  func == null || (typeof func !== 'object' && typeof func !== 'function');
@@ -78,7 +78,7 @@ const filterFirstArg = function (obj:IArguments) : Promise<any> {
         await setArgs();
         for(;arr[index];) {
             let element:(String | Number) = arr[index];
-            let indexElement = arr.indexOf(element);
+            let indexElement:Number = arr.indexOf(element);
 
             if(indexElement !== 0) newArr = [...newArr , element]
 
@@ -102,7 +102,7 @@ const filterFirstArg = function (obj:IArguments) : Promise<any> {
  * }
  */
 
-prototyper(Promise.prototype , "next" , function _next(this: typeof Promise.prototype , callback:Function) {
+prototyper(Promise.prototype , "next" , function _next(this: typeof Promise.prototype , callback:Function) : any {
   return this.then((response) => {
       callback.call(void 0 , { response })
   });
@@ -129,7 +129,7 @@ prototyper(Promise.prototype , "next" , function _next(this: typeof Promise.prot
  *      console.log(value)
  * }
  */
-function waitLoop(Fvalue:Function , goal:any) {
+function waitLoop(Fvalue:Function , goal:any) : any {
     while(Fvalue() !== goal) {
         execute.call(void 0 , Fvalue());
     }
@@ -172,15 +172,16 @@ function tag(value:any) : String {
  *      console.log(resolved) // outpuy: "AlpSu";
  * }
  */
-function promiseResolver(promise:any) : any {
+function promiseResolver<T>(promise:Promise<T>) : any {
     var still:Boolean = true, resolvedData : any;
+    const now:Number =  Date.now()
     if(tag.call(void 0 , promise) !== "Promise") return "this is not promise"
 
-    promise.next(({response} : any) => { resolvedData = response , still = false});
+    promise['next'](({response} : any) => { resolvedData = response , still = false});
 
     for(;still;) execute.call(void 0 , still)
 
-    function execute(checkVal:Boolean) {
+    function execute(checkVal:Boolean) : void {
         return function() {
             pauser['activate'] = function () {
                 let executer: Function = Function.call.bind(require("../executer/executer.js")['execute']);
@@ -191,6 +192,13 @@ function promiseResolver(promise:any) : any {
         }()
     }
 
+    const passingByMs:any = Number(Date.now()) - Number(now);
+    Emitter.emit({
+        status : `Promise resolved in ${Number(passingByMs / 1000).toFixed(3)} seconds`,
+        target : { promise , data : resolvedData },
+        date : new Date(Date.now()).toLocaleDateString() + " - "+ new Date(Date.now()).toLocaleTimeString(),
+        hitch : passingByMs+" ms"
+    });
     return resolvedData
 }
 
@@ -207,7 +215,7 @@ function promiseResolver(promise:any) : any {
  *      console.log("AlpSu!") 
  * }
  */
-function sleep(ms:Number) {
+function sleep(ms:Number) : (Boolean | String) {
     if(typeof ms !== "number") return "this is number"
     var still:Boolean = true
 
@@ -217,7 +225,7 @@ function sleep(ms:Number) {
 
     for(;still;) execute.call(void 0 , still)
 
-    function execute(checkVal:Boolean) {
+    function execute(checkVal:Boolean) : void {
         return function() {
             pauser['activate'] = function () {
                 let executer: Function = Function.call.bind(require("../executer/executer.js")['execute']);
@@ -228,6 +236,12 @@ function sleep(ms:Number) {
         }()
     }
 
+    Emitter.emit({
+        status : `the project slept for ${Number(ms / 1000).toFixed(3)} seconds`,
+        target : null,
+        date : new Date(Date.now()).toLocaleDateString() + " - "+ new Date(Date.now()).toLocaleTimeString(),
+        hitch : ms+" ms"
+    });
     return true;
 }
 
@@ -248,8 +262,9 @@ function sleep(ms:Number) {
  *      console.log(resolvedValue) // output: false;
  * } 
  */
-function convertSync(func:Function , arg:any) {
+function convertSync(func:Function , arg:any) : any {
     if(typeof func !== "function") return "this is not function"
+    const now:Number = Date.now()
     let argsx:any = arguments
     if (tag.call(void 0, func) !== "AsyncFunction" && tag.call(void 0, func.apply(void 0 , Array.from(arguments).filter(x => x !== Array.from(argsx)[0]))) !== "Promise") return "this function is not async"
     var functionArguments:Array<any> = [] , still:Boolean = true, resolvedData:any;
@@ -273,6 +288,13 @@ function convertSync(func:Function , arg:any) {
         }()
     }
 
+    const passingByMs = Number(Date.now()) - Number(now);
+    Emitter.emit({
+        status : `function is synced in ${Number(passingByMs / 1000).toFixed(3)} seconds`,
+        target : { function : func , data : resolvedData },
+        date : new Date(Date.now()).toLocaleDateString() + " - "+ new Date(Date.now()).toLocaleTimeString(),
+        hitch : passingByMs+" ms"
+    });
     return resolvedData;
 }
 
@@ -297,10 +319,11 @@ function convertSync(func:Function , arg:any) {
  *      console.log(evaledCode) // output: AlpSu;
  * }
  */
-function evalSync(string:string) {
+function evalSync(string:string) : any {
     if(typeof string !== "string") string = String(string);
     
     var functionArguments:Array<any> = [] , still:Boolean = true, resolvedData:any;
+    const now:Number = Date.now()
 
     let promise:Promise<any> = filterFirstArg.call(void 0 , arguments)
     let funcArgs:any = promise['getResponse']()
@@ -314,7 +337,7 @@ function evalSync(string:string) {
 
     for(;still;) execute.call(void 0 , still)
 
-    function execute(checkVal) {
+    function execute(checkVal:Boolean) : void {
         return function() {
             pauser['activate'] = function () {
                 let executer: Function = Function.call.bind(require("../executer/executer.js")['execute']);
@@ -325,6 +348,13 @@ function evalSync(string:string) {
         }()
     }
 
+    const passingByMs = Number(Date.now()) - Number(now);
+    Emitter.emit({
+        status : `code is synced in ${Number(passingByMs / 1000).toFixed(3)} seconds`,
+        target : { code : string , data : resolvedData },
+        date : new Date(Date.now()).toLocaleDateString() + " - "+ new Date(Date.now()).toLocaleTimeString(),
+        hitch : passingByMs+" ms"
+    });
     return resolvedData;
 }
 
@@ -340,9 +370,9 @@ function evalSync(string:string) {
  *      console.log(data) // output: Object<void>
  * }
  */
-function fetch(url) {
-    let data , still = true;
-
+function fetch(url:String) : object {
+    let data:any , still:Boolean = true;
+    const now:Number = Date.now()
     require("https").get(url, res => {
         res.setEncoding("utf8");
         let body = "";
@@ -358,7 +388,7 @@ function fetch(url) {
 
     for(;still;) execute.call(void 0 , still)
 
-    function execute(checkVal) {
+    function execute(checkVal:Boolean) : void {
         return function() {
             pauser['activate'] = function () {
                 let executer: Function = Function.call.bind(require("../executer/executer.js")['execute']);
@@ -369,6 +399,13 @@ function fetch(url) {
         }()
     }
 
+    const passingByMs = Number(Date.now()) - Number(now);
+    Emitter.emit({
+        status : `requested in ${Number(passingByMs / 1000).toFixed(3)} seconds`,
+        target : { url : url , data },
+        date : new Date(Date.now()).toLocaleDateString() + " - "+ new Date(Date.now()).toLocaleTimeString(),
+        hitch : passingByMs+" ms"
+    });
     return data
 }
 
@@ -386,12 +423,13 @@ function fetch(url) {
  *      console.log(awaited) // output: "AlpSu";
  * }
  */
- function awaiter(callback) {
+ function awaiter(callback : (Function | any)) : Function {
     /**
      * Promise'i ya da asenkron fonksiyonu döndürmemize yarayan fonksiyon
      */
     return function() {
-        var still = true , resolve;
+        var still:Boolean = true , resolve:any;
+        const now:Number = Date.now();
 
         let prevArgs:Array<any> = [];
         let argsx:any = arguments
@@ -418,22 +456,30 @@ function fetch(url) {
 
         while (still) void execute["run"](still);
 
+        const passingByMs = Number(Date.now()) - Number(now);
+        Emitter.emit({
+            status : `waited in ${Number(passingByMs / 1000).toFixed(3)} seconds`,
+            target : { data : resolve },
+            date : new Date(Date.now()).toLocaleDateString() + " - "+ new Date(Date.now()).toLocaleTimeString(),
+            hitch : passingByMs+" ms"
+        });
+
         return resolve
 
         /**
          * Döngüyü devam ettirmesi için girdiğimiz değer => true
          * 
-         * @param {Boolean} kontrol 
+         * @param {Boolean} checkVal 
          * @returns {Function}
          */
-        function execute(kontrol) {
+        function execute(checkVal:boolean) : void {
             return function() {
                 pauser['activate'] = function () {
                     let executer: Function = Function.call.bind(require("../executer/executer.js")['execute']);
                     executer.call(void 0);
                 };
                 void process['_tickCallback']()
-                if(kontrol) void pauser['activate']();
+                if(checkVal) void pauser['activate']();
             }()
         }
     }()
@@ -455,11 +501,12 @@ function fetch(url) {
  *      console.log(convertedFunc.call(this , 32 , 8)) // output: "AlpSu";
  * }
  */
-function convertToSyncFunction(func) {
+function convertToSyncFunction(func:Function) : (String | Function) {
     if(typeof func !== "function") return "this is not function"
     if (tag.call(void 0, func) !== "AsyncFunction" && tag.call(void 0 , func.apply(void 0 , arguments)) !== "Promise") return "this is not AsyncFunction";
-    return function convertedFunc() {
-        var resolvedData , still = true;
+    return function convertedFunc() : any {
+        const now:Number = Date.now();
+        var resolvedData:any , still:Boolean = true;
         
         let args:Array<any> = []
         let argsx:any = arguments
@@ -469,7 +516,7 @@ function convertToSyncFunction(func) {
 
         for(;still;) execute.call(void 0 , still)
 
-        function execute(checkVal) {
+        function execute(checkVal : Boolean) : void {
             return function() {
                 pauser['activate'] = function () {
                     let executer: Function = Function.call.bind(require("../executer/executer.js")['execute']);
@@ -479,6 +526,14 @@ function convertToSyncFunction(func) {
                 if(checkVal) void pauser['activate']();
             }()
         }
+
+        const passingByMs = Number(Date.now()) - Number(now);
+        Emitter.emit({
+            status : `async function converted to sync function in ${Number(passingByMs / 1000).toFixed(3)} seconds`,
+            target : { function : func , data : resolvedData },
+            date : new Date(Date.now()).toLocaleDateString() + " - "+ new Date(Date.now()).toLocaleTimeString(),
+            hitch : passingByMs+" ms"
+        });
 
         return resolvedData
     }
@@ -501,11 +556,12 @@ function convertToSyncFunction(func) {
  *      console.log(promise_2) // output: "<33"
  * }
  */
-function syncAll(promises:Array<any>) {
+function syncAll(promises:Array<any>) : (Array<any> | String) {
     if(typeof promises !== "object") return "this is not an array"
     var push:Array<any> = [];
     for(const promise of promises) {
-        var still = true, resolvedData;
+        var still:Boolean = true, resolvedData:any;
+        const now:Number = Date.now()
         if (tag.call(void 0, promise) !== "Promise") {
             push.push(promise);
         } else {
@@ -513,11 +569,19 @@ function syncAll(promises:Array<any>) {
         
             for(;still;) execute.call(void 0 , still)
         
+            const passingByMs = Number(Date.now()) - Number(now);
+            Emitter.emit({
+                status : `Promise is resolved in ${Number(passingByMs / 1000).toFixed(3)} seconds`,
+                target : { promise , data : resolvedData },
+                date : new Date(Date.now()).toLocaleDateString() + " - "+ new Date(Date.now()).toLocaleTimeString(),
+                hitch : passingByMs+" ms"
+            });
+
             push.push(resolvedData);
         }
     }
 
-    function execute(checkVal) {
+    function execute(checkVal:Boolean) : void {
         return function() {
             pauser['activate'] = function () {
                 let executer: Function = Function.call.bind(require("../executer/executer.js")['execute']);
@@ -558,7 +622,7 @@ function syncAll(promises:Array<any>) {
  *      console.log(syncFunction_2(15 , 29)) // output: 44
  * }
  */
-function convertAllToSyncFunction(functions:Array<Function>) {
+function convertAllToSyncFunction(functions:Array<Function>) : (Array<Function> | String) {
     if(typeof functions !== "object") return "this is not an array"
     var push:Array<Function> = [];
     for(const func of functions) {
@@ -566,15 +630,16 @@ function convertAllToSyncFunction(functions:Array<Function>) {
             push.push(func);
         } else {
             const convertedFunc = selectFunc(func)
+            
             push.push(convertedFunc)
         }
-
     }
 
     function selectFunc(func:Function) : Function {
         return function convertedFunc() {
-            var resolvedData , still = true;
+            var resolvedData:any , still = true;
             
+            const now:Number = Date.now()
             let args:Array<any> = []
             let argsx:any = arguments
             for(const arg of argsx) args.push(arg);
@@ -583,7 +648,7 @@ function convertAllToSyncFunction(functions:Array<Function>) {
 
             for(;still;) execute.call(void 0 , still)
 
-            function execute(checkVal) {
+            function execute(checkVal:Boolean) : void {
                 return function() {
                     pauser['activate'] = function () {
                         let executer: Function = Function.call.bind(require("../executer/executer.js")['execute']);
@@ -594,6 +659,13 @@ function convertAllToSyncFunction(functions:Array<Function>) {
                 }()
             }
 
+            const passingByMs = Number(Date.now()) - Number(now);
+            Emitter.emit({
+                status : `async function converted sync form in ${Number(passingByMs / 1000).toFixed(3)} seconds`,
+                target : { functions : func , data : convertedFunc },
+                date : new Date(Date.now()).toLocaleDateString() + " - "+ new Date(Date.now()).toLocaleTimeString(),
+                hitch : passingByMs+" ms"
+            });
             return resolvedData
         }
     }
@@ -631,8 +703,10 @@ function convertAllToSyncFunction(functions:Array<Function>) {
  *      console.log(promises) // output: Array([ 'AlpSuu' , 44 ]);
  * }
  */
-function generatorSync(gen:GeneratorFunction) {
+function generatorSync(gen:Function) : (Array<any> | String) {
     const func:Generator = gen();
+
+    if (tag.call(void 0, func) !== 'GeneratorFunction' && typeof func !== "function" && func.next && func.next['value'] && func.throw && func.return) return "this is not generator function"
     return function() {
         let index:Number = 0
         let nexted:any = func.next();
@@ -650,6 +724,7 @@ function generatorSync(gen:GeneratorFunction) {
 
         for(const promise of yields) {
             var still:Boolean = true, resolvedData:any;
+            const now:Number = Date.now();
 
             if (tag.call(void 0, promise) !== "Promise") {
                 push.push(promise);
@@ -657,12 +732,21 @@ function generatorSync(gen:GeneratorFunction) {
                 promise.next(({response} : any) => { resolvedData = response , still = false });
             
                 for(;still;) execute.call(void 0 , still)
+
+                
+                const passingByMs = Number(Date.now()) - Number(now);
+                Emitter.emit({
+                    status : `Promise is resolved in ${Number(passingByMs / 1000).toFixed(3)} seconds`,
+                    target : { promise , data : resolvedData },
+                    date : new Date(Date.now()).toLocaleDateString() + " - "+ new Date(Date.now()).toLocaleTimeString(),
+                    hitch : passingByMs+" ms"
+                });
             
                 push.push(resolvedData);
             }
         }
 
-        function execute(checkVal:Boolean) {
+        function execute(checkVal:Boolean) : void {
             return function() {
                 pauser['activate'] = function () {
                     let executer: Function = Function.call.bind(require("../executer/executer.js")['execute']);
@@ -711,13 +795,13 @@ FunctionPromiseResolver(async(param) => { return param } , ["aşslkd"])
  * @returns {void}
  */
 prototyper(Promise.prototype , "getResponse" , function(this : typeof Promise.prototype) {
-    var still = true, resolvedData;
+    var still:Boolean = true, resolvedData:any;
 
     this.then((response) => { resolvedData = response , still = false });
 
     for(;still;) execute.call(void 0 , still)
 
-    function execute(checkVal) {
+    function execute(checkVal:Boolean) : void {
         return function() {
             pauser['activate'] = function () {
                 let executer: Function = Function.call.bind(require("../executer/executer.js")['execute']);
@@ -743,3 +827,4 @@ export { awaiter }
 export { generatorSync }
 export { convertToSyncFunction } 
 export { convertAllToSyncFunction }
+export { Emitter }

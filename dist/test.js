@@ -47,6 +47,15 @@ var index_7 = require("./index");
 var index_8 = require("./index");
 var index_9 = require("./index");
 var index_10 = require("./index");
+var index_11 = require("./index");
+index_11.Emitter.call(function (data) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            console.log(data);
+            return [2 /*return*/];
+        });
+    });
+});
 function asyncFunction1(param1) {
     var _this = this;
     return new Promise(function (res) { return __awaiter(_this, void 0, void 0, function () {
