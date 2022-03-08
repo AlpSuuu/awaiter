@@ -1,4 +1,4 @@
-## [AlpSuuu/converter-to-sync 😋](https://github.com/AlpSuuu/awaiter/)
+## [AlpSuuu/converter-to-sync 😋](https://www.npmjs.com/package/converter-to-sync)
 kullanışlı bir "Promise resolver" ve asenkron fonksiyonu senkron fonksiyona dönüştürücü!
 
 ## Lisans
