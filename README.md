@@ -1,8 +1,5 @@
-## [AlpSuuu/converter-to-sync 😋](https://www.npmjs.com/package/converter-to-sync)
+## [AlpSuuu/converter-to-sync 😋](https://github.com/AlpSuuu/awaiter/)
 kullanışlı bir "Promise resolver" ve asenkron fonksiyonu senkron fonksiyona dönüştürücü!
-
-## Lisans
-[MIT License](https://github.com/AlpSuuu/awaiter/blob/main/LICENSE)
 
 ```
 npm install converter-to-sync
