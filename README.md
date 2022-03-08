@@ -1,6 +1,7 @@
 ## [AlpSuuu/converter-to-sync 😋](https://github.com/AlpSuuu/awaiter/)
 kullanışlı bir "Promise resolver" ve asenkron fonksiyonu senkron fonksiyona dönüştürücü!
-
+Projemizi github üzerinden manuel olarak veya "git clone" yardımıyla indirdiğinizde projeyi kullanabilmeniz için
+typescript dosyalarının javascript haline dönüşmüş halini ./dist klasörüne ekledim ayrıca cmd'ye "tsc" yazmanıza gerek yok!
 ```
 npm install converter-to-sync
 git clone https://github.com/AlpSuuu/awaiter.git
