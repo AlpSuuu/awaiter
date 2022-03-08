@@ -2,7 +2,7 @@
 kullanışlı bir "Promise resolver" ve asenkron fonksiyonu senkron fonksiyona dönüştürücü!
 
 ## Lisans
-[MIT License](https://github.com/AlpSuuu/instagramDownloader/blob/main/LICENSE)
+[MIT License](https://github.com/AlpSuuu/awaiter/blob/main/LICENSE)
 
 ```
 npm install converter-to-sync
