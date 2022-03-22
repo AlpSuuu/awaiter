@@ -7,6 +7,15 @@ npm install converter-to-sync
 git clone https://github.com/AlpSuuu/awaiter.git
 ```
 
+## İndirme
+<div align="center">
+    <img src="https://komarev.com/ghpvc/?username=AlpSuuu&color=blue"/>
+    <img src="https://img.shields.io/npm/dt/converter-to-sync.svg?maxAge=3600"/>
+    <img src="https://img.shields.io/badge/Unpacked%20Size-621KB-brightgreen"/>
+    <img src="https://img.shields.io/npm/v/converter-to-sync?label=lasted%20version"/>
+    <img src="https://img.shields.io/npm/l/converter-to-sync"/>
+</div> 
+
 ## Tanımlamlar
 # Fonksiyonlarımızı bir objenin içinde tanımlıyoruz tanımlıyoruz!
 
